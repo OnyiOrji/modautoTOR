@@ -8,34 +8,33 @@ import subprocess
 
 
 try:
-    check_pip3 = subprocess.check_output('rpm -s python3-pip', shell=True)
-    if str('install ok installed') in str(check_pip3):
-        pass
+    check_pip3 = subprocess.check_output('rpm -q python3-pip', shell=True)
+    if str('is not installed') in str(check_pip3):
+        raise subprocess.CalledProcessError(returncode=1, cmd='rpm -q python3-pip')
 except subprocess.CalledProcessError:
     print('[+] pip3 not installed')
-    subprocess.check_output('sudo yum update',shell=True)
-    subprocess.check_output('sudo yum install python3-pip -y', shell=True)
-    print('[!] pip3 installed succesfully')
+    subprocess.check_output('sudo yum update', shell=True)
+    subprocess.check_output('sudo yum install python3-pip', shell=True)
+    print('[!] pip3 installed successfully')
 
 
 
 try:
-
     import requests
-except Exception:
+except ImportError:
     print('[+] python3 requests is not installed')
+    os.system('sudo yum install python3')  # Install Python3 if not installed
+    os.system('sudo yum install python3-pip')  # Install pip3 if not installed
     os.system('pip3 install requests')
     os.system('pip3 install requests[socks]')
-    print('[!] python3 requests is installed ')
-try:
+    print('[!] python3 requests is installed')
 
+try:
     check_tor = subprocess.check_output('which tor', shell=True)
 except subprocess.CalledProcessError:
-
-    print('[+] tor is not installed !')
-    subprocess.check_output('sudo yum update',shell=True)
-    subprocess.check_output('sudo yum install tor -y',shell=True)
-    print('[!] tor is installed succesfully ')
+    print('[+] tor is not installed')
+    os.system('sudo yum install tor')  # Install Tor if not installed
+    print('[!] tor is installed')
 
 os.system("clear")
 def ma_ip():
